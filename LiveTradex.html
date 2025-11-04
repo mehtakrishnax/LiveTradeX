@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveTradeX</title>
+    <link rel="stylesheet" href="LiveTradex.css">
+    <script src="LiveTradex.js" deref="async"></script>
+</head>
+
+<body>
+    <di="app">
+        <header class="topbar">
+            <div class="brand">
+                <div class="logo">💲</div>
+                <div class="title">
+                    <h1>LiveTradeX</h1>
+                    <span class="muted">Real trading •Broker-connected•Low-Latency</span>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="connectBtn" class="Btn primary">Connect Broker </button>
+
+
+                <div id="userbadge" class="badge">Not connected</div>
+
+            </div>
+
+
+        </header>
+        <main class="main-grid">
+            <sectio class="left-panel card">
+                <div class="panel-header">
+
+                </div>
+                <input id="symbollnput" class="symbol-input" value="RELIANCE" />
+                <div class="muted sm">Enter symbol & press Enter</div>
+                </div>
+                <div class="action">
+                    <select id="product" class="select">
+                        <option value="CNC">CNC</option>
+                        </option>
+                        <option value="MIS">MIS</option>
+                        </option>
+                    </select>
+                    <button id="buyBtn" class="Btn success">BUY</button>
+                    <button id="sellBtn" class="Btn danger">SELL</button>
+                </div>
+                </div>
+                <div class="qoute-card">
+                    <div class="qoute-top">
+                        <div>
+                            <div class="sym" id="symdisplay">RELIANCE</div>
+                            <Div class="price" id="ltp">—</Div>
+                            <Div class="delta" id="delta">—</Div>
+                        </div>
+                        <div class="meta">
+                            <div class="meta-row"><span>Bid</span>
+                                <srong id="ask">—</srong>
+                            </div>
+                            <div class="meta-row"><span>Vol</span><strong id="Vol">—</strong></div>
+                        </div>
+                    </div>
+                    <canvas id="spark" class="sparkline"></canvas>
+                    <div class="latency">WS status:<span id="wsStatus">disconnected</span> • Latency: <span
+                            id="latency">—</span>ms</div>
+                </div>
+                <div class="ticks card tiny">
+                    <h4>recent ticks</h4>
+                    <div id="tickslist" class="ticks-list">No ticks yet</div>
+
+                </div>
+                </div>
+                </section>
+                <aside class="right-panel">
+                    <div class="card mini">
+                        <h3>Orders(demo)</h3>
+                        <div id="orders" class="orders-list">No orders yet</div>
+                    </div>
+                    <div class="card mini">
+                        <h3>quick stats</h3>
+                        <div class="stats">
+                            <div><span class="muted">orderRTT</span>
+                                <div id="rtt">—</div>
+                            </div>
+                            <div><span class="muted">connected users</span>
+                                <div id="users">1</div>
+                            </div>
+                            <div><span class="muted">server time</span>
+                                <div id="stime">1</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mini">
+                        <h3>Notes</h3>
+                        <ul class="muted">
+                            <li>This UI coonects to your server which should provide an authorized broker WS URL.</li>
+                            <li>Do NOT store broker secrets in frontend keep them on server.</li>
+                            <li>For Production,add TLS,token encryption,rate-limits,and risk checks.</li>
+                        </ul>
+
+                    </div>
+                </aside>
+        </main>
+        <footer class="footer">
+            <div class="muted">Made with❤by LiveTradeX Team.</div>
+        </footer>
+        </div>
+
+        <script src="LiveTradex.js"></script>
+
+
+
+
+</body>
+
+</html>

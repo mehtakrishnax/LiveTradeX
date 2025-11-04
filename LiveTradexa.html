@@ -1,0 +1,487 @@
+#html for livetradex
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Squad Trade — Live</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="app">
+        <header class="topbar">
+            <div class="brand">
+                <div class="logo">⚡</div>
+                <div class="title">
+                    <h1>Squad Trade</h1>
+                    <span class="muted">Real trading • Broker-connected • Low-latency</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="connectBtn" class="btn primary">Connect Broker</button>
+                <div id="userBadge" class="badge">Not connected</div>
+            </div>
+        </header>
+
+        <main class="main-grid">
+            <section class="left-panel card">
+                <div class="panel-header">
+                    <div>
+                        <input id="symbolInput" class="symbol-input" value="RELIANCE" />
+                        <div class="muted sm">Enter symbol & press Enter</div>
+                    </div>
+
+                    <div class="actions">
+                        <select id="product" class="select">
+                            <option value="CNC">CNC</option>
+                            <option value="MIS">MIS</option>
+                        </select>
+                        <button id="buyBtn" class="btn success">Buy</button>
+                        <button id="sellBtn" class="btn danger">Sell</button>
+                    </div>
+                </div>
+
+                <div class="quote-card">
+                    <div class="quote-top">
+                        <div>
+                            <div class="sym" id="symDisplay">RELIANCE</div>
+                            <div class="price" id="ltp">--</div>
+                            <div class="delta" id="delta">—</div>
+                        </div>
+                        <div class="meta">
+                            <div class="meta-row"><span>Bid</span><strong id="bid">—</strong></div>
+                            <div class="meta-row"><span>Ask</span><strong id="ask">—</strong></div>
+                            <div class="meta-row"><span>Vol</span><strong id="vol">—</strong></div>
+                        </div>
+                    </div>
+
+                    <canvas id="spark" class="sparkline"></canvas>
+                    <div class="latency">WS status: <span id="wsStatus">disconnected</span> • Latency: <span
+                            id="latency">—</span> ms</div>
+                </div>
+
+                <div class="ticks card tiny">
+                    <h4>Recent ticks</h4>
+                    <div id="ticksList" class="ticks-list">No ticks yet</div>
+                </div>
+            </section>
+
+            <aside class="right-panel">
+                <div class="card mini">
+                    <h3>Orders (demo)</h3>
+                    <div id="orders" class="orders-list">No orders yet</div>
+                </div>
+
+                <div class="card mini">
+                    <h3>Quick Stats</h3>
+                    <div class="stats">
+                        <div><span class="muted">Order RTT</span>
+                            <div id="rtt">—</div>
+                        </div>
+                        <div><span class="muted">Connected Users</span>
+                            <div id="users">1</div>
+                        </div>
+                        <div><span class="muted">Server Time</span>
+                            <div id="stime">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mini">
+                    <h3>Notes</h3>
+                    <ul class="muted">
+                        <li>This UI connects to your server which should provide an authorized broker WS URL.</li>
+                        <li>Do NOT store broker secrets in frontend — keep them on server.</li>
+                        <li>For production, add TLS, token encryption, rate-limits, and risk checks.</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="footer">
+            <div class="muted">Made with ♥ by Squad — Demo UI</div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
+css for livetradex
+/* styles.css — modern glassy theme, responsive, subtle motion */
+:root{
+--bg1: #0f1724;
+--bg2: #071029;
+--card: rgba(255,255,255,0.04);
+--accent: #7c5cff;
+--accent-2: #00d4ff;
+--glass: rgba(255,255,255,0.03);
+--success: #0ecb81;
+--danger: #ff6b6b;
+--muted: rgba(255,255,255,0.6);
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{
+margin:0;
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.08), transparent 10%),
+radial-gradient(900px 400px at 90% 90%, rgba(0,212,255,0.03), transparent 6%),
+linear-gradient(180deg, var(--bg1), var(--bg2));
+color: #eef2ff;
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+padding:28px;
+}
+
+/* layout */
+.app{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 56px)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:linear-gradient(180deg,
+rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter: blur(6px);box-shadow: 0 6px 30px rgba(2,6,23,0.6)}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0
+6px 24px rgba(124,92,255,0.12);transform:rotate(-10deg)}
+.title h1{margin:0;font-size:18px;letter-spacing:0.4px}
+.muted{color:var(--muted);font-size:12px}
+.controls{display:flex;align-items:center;gap:10px}
+.badge{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:999px;font-size:13px}
+
+/* grid */
+.main-grid{display:grid;grid-template-columns: 1fr 320px;gap:18px;align-items:start}
+
+/* cards */
+.card{background:var(--card);padding:16px;border-radius:12px;box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 8px
+28px rgba(2,6,23,0.6)}
+.mini{padding:12px}
+.tiny{padding:12px;margin-top:12px}
+
+/* left panel */
+.left-panel .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.symbol-input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px
+12px;border-radius:10px;color:inherit;min-width:180px;font-weight:600}
+.actions{display:flex;gap:8px;align-items:center}
+.select{background:rgba(0,0,0,0.45);border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.03);color:inherit}
+.btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;transform:translateY(0);transition:all
+.14s ease;box-shadow: 0 6px 18px rgba(2,6,23,0.6)}
+.btn:hover{transform:translateY(-2px)}
+.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#021025}
+.success{background:linear-gradient(90deg,#00e09a,#00b97f);color:#021025}
+.danger{background:linear-gradient(90deg,var(--danger),#ff9966);color:#021025}
+
+/* quote card */
+.quote-card{margin-top:6px;border-radius:12px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02),
+rgba(255,255,255,0.01))}
+.quote-top{display:flex;justify-content:space-between;align-items:center}
+.sym{font-weight:900;font-size:20px}
+.price{font-size:34px;font-weight:900;margin-top:4px}
+.delta{margin-top:6px;color:var(--muted)}
+.meta{display:flex;flex-direction:column;gap:6px;text-align:right}
+.meta-row{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;min-width:110px}
+.sparkline{width:100%;height:80px;margin-top:12px;border-radius:8px;background:linear-gradient(180deg,
+rgba(255,255,255,0.01), transparent);display:block}
+
+/* ticks */
+.ticks{margin-top:12px}
+.ticks-list{max-height:160px;overflow:auto;font-family:monospace;padding:8px;background:rgba(0,0,0,0.25);border-radius:8px}
+.ticks-list .tick{display:flex;justify-content:space-between;padding:6px;border-bottom:1px dashed
+rgba(255,255,255,0.02)}
+
+/* right panel stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.orders-list{font-family:monospace;max-height:160px;overflow:auto;padding:8px;background:rgba(0,0,0,0.25);border-radius:6px}
+
+/* footer */
+.footer{display:flex;justify-content:center;padding:8px;color:var(--muted);font-size:13px}
+
+/* responsive */
+@media (max-width:980px){
+.main-grid{grid-template-columns:1fr;gap:12px}
+.right-panel{order:2}
+}
+js for livetradex
+/* app.js
+Frontend behaviour:
+- Connects to server endpoint /api/ws/authorize to get an authorized WS URL for your broker (server must return
+{ok:true, wsUrl})
+- Connects to the WS, subscribes to instrument ticks (implementation depends on broker). This UI expects the
+server/broker WS to send JSON ticks like:
+{ symbol: "RELIANCE", timestamp: 1234567890, last_price: 2500.5, bid: 2500, ask: 2500.8, volume: 1234 }
+- If no WS is available, a demo simulator sends ticks so you can see the UI.
+- Order placement: calls POST /api/order with JSON body (tradingsymbol,quantity,transaction_type,order_type,product) —
+your server should place the order with the broker.
+*/
+
+(() => {
+// DOM refs
+const connectBtn = document.getElementById('connectBtn');
+const wsStatus = document.getElementById('wsStatus');
+const latencyEl = document.getElementById('latency');
+const ltpEl = document.getElementById('ltp');
+const symDisplay = document.getElementById('symDisplay');
+const deltaEl = document.getElementById('delta');
+const bidEl = document.getElementById('bid');
+const askEl = document.getElementById('ask');
+const volEl = document.getElementById('vol');
+const ticksList = document.getElementById('ticksList');
+const symbolInput = document.getElementById('symbolInput');
+const spark = document.getElementById('spark');
+const buyBtn = document.getElementById('buyBtn');
+const sellBtn = document.getElementById('sellBtn');
+const ordersEl = document.getElementById('orders');
+const rttEl = document.getElementById('rtt');
+const stimeEl = document.getElementById('stime');
+
+let ws = null;
+let socketOpenAt = 0;
+let lastTick = null;
+let sparkData = [];
+const MAX_SPARK = 60;
+const orders = [];
+let demoMode = false;
+
+// canvas sparkline
+const ctx = spark.getContext('2d');
+function drawSpark(){
+const w = spark.width = spark.clientWidth * devicePixelRatio;
+const h = spark.height = spark.clientHeight * devicePixelRatio;
+ctx.clearRect(0,0,w,h);
+if(sparkData.length===0) return;
+const min = Math.min(...sparkData);
+const max = Math.max(...sparkData);
+const range = Math.max(1, max - min);
+ctx.lineWidth = 2 * devicePixelRatio;
+ctx.beginPath();
+for(let i=0;i<sparkData.length;i++){ const x=(i / (MAX_SPARK-1)) * w; const y=h - ((sparkData[i] - min) / range) * h;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); } // gradient stroke const grad=ctx.createLinearGradient(0,0,w,0);
+    grad.addColorStop(0,'#7c5cff'); grad.addColorStop(1,'#00d4ff'); ctx.strokeStyle=grad; ctx.stroke(); } function
+    pushSpark(val){ if(typeof val !=='number' || !isFinite(val)) return; sparkData.push(val); if(sparkData.length>
+    MAX_SPARK) sparkData.shift();
+    drawSpark();
+    }
+
+    // update ticks list
+    function addTick(t){
+    const item = document.createElement('div');
+    item.className = 'tick';
+    const time = new Date(t.timestamp || Date.now()).toLocaleTimeString();
+    item.innerHTML = `<div>${time} <small class="muted">${t.symbol||t.tradingsymbol||''}</small></div>
+    <div><strong>${(t.last_price||t.ltp||'-')}</strong></div>`;
+    ticksList.prepend(item);
+    // keep last 80
+    while(ticksList.children.length>80) ticksList.removeChild(ticksList.lastChild);
+    }
+
+    // process incoming tick object (normalize possible formats)
+    function handleTick(raw){
+    if(!raw) return;
+    // raw can be an array for some brokers; normalize to object
+    let tick = raw;
+    if(Array.isArray(raw) && raw.length>0 && typeof raw[0] === 'object') tick = raw[0];
+    // sample expected shape: {symbol, last_price, bid, ask, volume, timestamp}
+    const ltp = tick.last_price || tick.ltp || tick.lp || tick.price;
+    const bid = tick.bid || tick.depth?.bid || '-';
+    const ask = tick.ask || tick.depth?.ask || '-';
+    const vol = tick.volume || tick.total_traded_volume || tick.vol || '-';
+    const symbol = tick.symbol || tick.tradingsymbol || (symbolInput && symbolInput.value) || 'SYM';
+
+    // UI updates
+    symDisplay.textContent = symbol;
+    ltpEl.textContent = ltp ? Number(ltp).toFixed(2) : '—';
+    bidEl.textContent = bid || '—';
+    askEl.textContent = ask || '—';
+    volEl.textContent = vol || '—';
+
+    // delta
+    if(lastTick && lastTick.last_price){
+    const prev = Number(lastTick.last_price);
+    const now = Number(ltp);
+    const diff = now - prev;
+    const pct = prev ? (diff / prev * 100) : 0;
+    deltaEl.textContent = `${diff>=0?'+':''}${diff.toFixed(2)} (${pct>=0?'+':''}${pct.toFixed(2)}%)`;
+    deltaEl.style.color = diff >= 0 ? '#8cffb9' : '#ff8b8b';
+    }
+
+    lastTick = { last_price: ltp };
+
+    // spark and tick list
+    if(typeof ltp === 'number' || !isNaN(Number(ltp))){
+    pushSpark(Number(ltp));
+    }
+    addTick({ symbol, last_price: ltp, timestamp: tick.timestamp || Date.now() });
+    }
+
+    // attempt to connect to server-provided WS
+    async function connectToBrokerWS(){
+    wsStatus.textContent = 'connecting...';
+    try {
+    // ask your server for an authorized WS URL
+    const r = await fetch('/api/ws/authorize');
+    const j = await r.json();
+    if(!j.ok || !j.wsUrl){
+    console.warn('No wsUrl from server, switching to demo');
+    wsStatus.textContent = 'no server ws (demo mode)';
+    startDemoTicks();
+    demoMode = true;
+    return;
+    }
+    const url = j.wsUrl;
+    // open websocket
+    ws = new WebSocket(url);
+    ws.binaryType = 'arraybuffer';
+    ws.onopen = () => {
+    socketOpenAt = performance.now();
+    wsStatus.textContent = 'connected';
+    latencyEl.textContent = '—';
+    // If your broker requires a subscription message, send it here.
+    // Example (Kite): ws.send(JSON.stringify({a: "subscribe", v: [instrument_token]}))
+    // For demo, we'll not send subscription and accept ticks server sends.
+    };
+    ws.onmessage = (ev) => {
+    // measure latency as simple RTT for message (not perfect)
+    const receivedAt = performance.now();
+    try{
+    const dataText = typeof ev.data === 'string' ? ev.data : new TextDecoder().decode(ev.data);
+    const payload = JSON.parse(dataText);
+    // if server sends heartbeat {type:'hb'} ignore
+    if(payload.type === 'hb'){
+    latencyEl.textContent = Math.round(performance.now() - socketOpenAt);
+    return;
+    }
+    handleTick(payload);
+    }catch(e){
+    // binary or unknown format — try simple parse
+    // If your broker sends array of ticks (kite gives arrays), pass array into handleTick
+    try{
+    const arr = JSON.parse(new TextDecoder().decode(ev.data));
+    handleTick(arr);
+    }catch(err){
+    console.error('unparsed ws message', err);
+    }
+    }
+    };
+    ws.onclose = () => {
+    wsStatus.textContent = 'closed';
+    // try reconnect with exponential backoff
+    setTimeout(()=>connectToBrokerWS(), 2000);
+    };
+    ws.onerror = (e) => {
+    console.error('WS error', e);
+    wsStatus.textContent = 'error';
+    // fallback to demo
+    startDemoTicks();
+    demoMode = true;
+    };
+    } catch (err) {
+    console.error('connect error', err);
+    wsStatus.textContent = 'error';
+    startDemoTicks();
+    demoMode = true;
+    }
+    }
+
+    // demo tick simulator (nice to have so the UI looks alive out-of-the-box)
+    let demoTimer = null;
+    function startDemoTicks(){
+    if(demoTimer) return;
+    wsStatus.textContent = 'demo (simulated ticks)';
+    let price = 2500 + Math.random() * 80;
+    demoTimer = setInterval(()=>{
+    const change = (Math.random() - 0.45) * (Math.random() * 6);
+    price = Math.max(10, price + change);
+    const tick = {
+    symbol: symbolInput.value || 'RELIANCE',
+    last_price: Number(price.toFixed(2)),
+    bid: Number((price - 0.6).toFixed(2)),
+    ask: Number((price + 0.6).toFixed(2)),
+    volume: Math.floor(Math.random() * 500 + 30),
+    timestamp: Date.now()
+    };
+    handleTick(tick);
+    // server time display
+    stimeEl.textContent = new Date().toLocaleTimeString();
+    }, 700);
+    }
+    function stopDemo(){
+    if(demoTimer){clearInterval(demoTimer); demoTimer = null;}
+    }
+
+    // order placement
+    async function placeOrder(side){
+    const symbol = symbolInput.value.trim() || 'RELIANCE';
+    const qty = 1;
+    const product = document.getElementById('product').value || 'CNC';
+    const order_type = 'MARKET';
+    const body = { tradingsymbol: symbol, quantity: qty, transaction_type: side, order_type, product };
+    try{
+    const t0 = performance.now();
+    const res = await fetch('/api/order', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body)
+    });
+    const t1 = performance.now();
+    const j = await res.json();
+    const rtt = Math.round(t1 - t0);
+    rttEl.textContent = `${rtt} ms`;
+    // display
+    const id = 'O' + Math.random().toString(36).slice(2,9);
+    const ord = { id, symbol, side, qty, status: j.ok ? 'ACK' : 'REJECT', raw: j };
+    orders.unshift(ord);
+    renderOrders();
+    }catch(err){
+    console.error('order error', err);
+    const id = 'O' + Math.random().toString(36).slice(2,9);
+    const ord = { id, symbol, side, qty, status: 'ERROR', raw: err.toString() };
+    orders.unshift(ord);
+    renderOrders();
+    }
+    }
+    function renderOrders(){
+    ordersEl.innerHTML = '';
+    for(const o of orders.slice(0,40)){
+    const d = document.createElement('div');
+    d.style.padding = '8px';
+    d.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
+    d.innerHTML = `<div style="display:flex;justify-content:space-between">
+        <div><strong>${o.symbol}</strong> <small class="muted">${o.side}</small></div>
+        <div>${o.status}</div>
+    </div>
+    <div style="font-size:12px;margin-top:6px;color:var(--muted)">${new Date().toLocaleTimeString()}</div>`;
+    ordersEl.appendChild(d);
+    }
+    }
+
+    // wire UI
+    connectBtn.addEventListener('click', async (e) => {
+    // this should redirect to your server's broker OAuth login if you want the user to authorize
+    // example: window.location = '/api/zerodha/login';
+    // but we also attempt to connect to WS to receive ticks if server has saved a token
+    connectBtn.disabled = true;
+    connectToBrokerWS().finally(()=> connectBtn.disabled = false);
+    });
+
+    buyBtn.addEventListener('click', ()=> placeOrder('BUY'));
+    sellBtn.addEventListener('click', ()=> placeOrder('SELL'));
+    symbolInput.addEventListener('keydown', (ev)=>{
+    if(ev.key === 'Enter'){ ev.preventDefault(); symDisplay.textContent = symbolInput.value; }
+    });
+
+    // initial demo connect so it looks shiny on open
+    startDemoTicks();
+
+    // animated tiny heartbeat for WS status
+    setInterval(()=>{
+    const s = wsStatus.textContent;
+    const el = wsStatus;
+    if(s && s.includes('connected')) el.style.color = '#7cffb6';
+    else if(s && s.includes('demo')) el.style.color = '#ffd36b';
+    else el.style.color = 'var(--muted)';
+    }, 1000);
+
+    // responsive redraw
+    window.addEventListener('resize', ()=> drawSpark());
+    })();
